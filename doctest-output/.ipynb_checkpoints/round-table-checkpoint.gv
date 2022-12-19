@@ -1,0 +1,55 @@
+// The Round Table
+digraph "round-table" {
+	n0 [label=n0]
+	n0 -> n2
+	n0 -> n3
+	n0 -> "0_mouse"
+	n1 [label=n1]
+	n1 -> n5
+	n1 -> n4
+	n1 -> "1_harborSeal"
+	n2 [label=n2]
+	n2 -> n0
+	n2 -> n4
+	n2 -> n6
+	n3 [label=n3]
+	n3 -> n7
+	n3 -> n0
+	n3 -> "5_cat"
+	n4 [label=n4]
+	n4 -> n2
+	n4 -> n1
+	n4 -> "2_finWhale"
+	n5 [label=n5]
+	n5 -> n1
+	n5 -> "4_horse"
+	n5 -> "2_blueWhale"
+	n6 [label=n6]
+	n6 -> n2
+	n6 -> "0_rat"
+	n6 -> "1_graySeal"
+	n7 [label=n7]
+	n7 -> n3
+	n7 -> "2_chimpanzee"
+	n7 -> "2_human"
+	"0_rat" [label="0_rat"]
+	"0_rat" -> n6
+	"5_cat" [label="5_cat"]
+	"5_cat" -> n3
+	"2_finWhale" [label="2_finWhale"]
+	"2_finWhale" -> n4
+	"0_mouse" [label="0_mouse"]
+	"0_mouse" -> n0
+	"4_horse" [label="4_horse"]
+	"4_horse" -> n5
+	"2_blueWhale" [label="2_blueWhale"]
+	"2_blueWhale" -> n5
+	"1_graySeal" [label="1_graySeal"]
+	"1_graySeal" -> n6
+	"1_harborSeal" [label="1_harborSeal"]
+	"1_harborSeal" -> n1
+	"2_chimpanzee" [label="2_chimpanzee"]
+	"2_chimpanzee" -> n7
+	"2_human" [label="2_human"]
+	"2_human" -> n7
+}
