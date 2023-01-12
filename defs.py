@@ -96,11 +96,11 @@ def cluster_path_search(args):
         
         # If end reached, stop search
         if head[0] == end:
-            return (start,end), tuple(head[1][1:-1]), (id_start,id_end)
+            return (id_start,id_end), tuple(head[1][1:-1])
             # return 'len(path) > 2'
             
         if len(head[1]) > 3:
-            return False
+            return 
             
         else:
             # Get ajacent noeds. They come in a tupule.
