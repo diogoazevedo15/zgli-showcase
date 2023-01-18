@@ -551,32 +551,32 @@ def generate_leaf_pairs(leaf_labels):
     
     return tuple(combinations(leaf_labels, 2))
 
-def generate_all_quartets(leaf_labels):
+# def generate_all_quartets(leaf_labels):
     
-    """
-        Generates leaf pair combinations (without repetition).
+#     """
+#         Generates leaf pair combinations (without repetition).
 
-        Parameters
-        ----------
+#         Parameters
+#         ----------
         
-        leaf_labels: array_like
-            A list with all leaf labels.
+#         leaf_labels: array_like
+#             A list with all leaf labels.
             
-       Returns
-        -------
-        leaf_pairs: array_like
-            A list containing all leaf quartet combinations (without repetition).
-    """
+#        Returns
+#         -------
+#         leaf_pairs: array_like
+#             A list containing all leaf quartet combinations (without repetition).
+#     """
     
-    leaf_quartets = combinations(leaf_labels, 4)
-    all_quartets = []
-    for quartet in leaf_quartets:
-        c = tuple(combinations(quartet, 2))
-        all_quartets.append((c[0],c[5]))
-        all_quartets.append((c[1],c[4]))
-        all_quartets.append((c[2],c[3]))
+#     leaf_quartets = combinations(leaf_labels, 4)
+#     all_quartets = []
+#     for quartet in leaf_quartets:
+#         c = tuple(combinations(quartet, 2))
+#         all_quartets.append((c[0],c[5]))
+#         all_quartets.append((c[1],c[4]))
+#         all_quartets.append((c[2],c[3]))
         
-    return all_quartets
+#     return all_quartets
 
 def get_leaf_pairs_with_paths(leaf_pairs, graph, processes):
     
@@ -614,37 +614,37 @@ def get_leaf_pairs_with_paths(leaf_pairs, graph, processes):
     
     return leaf_pairs_with_paths
 
-def find_consistent_quartets(all_quartets, leaf_pairs_with_paths):
+# def find_consistent_quartets(all_quartets, leaf_pairs_with_paths):
     
-    """
-        Get paths between pairs of nodes.
+#     """
+#         Get paths between pairs of nodes.
 
-        Parameters
-        ----------
-        all_quartets: array_like
-            An array with all tree quartets.
+#         Parameters
+#         ----------
+#         all_quartets: array_like
+#             An array with all tree quartets.
             
-        leaf_pairs_with_paths : dict
-            A dictionary with all the leaf node pairs and the respective mother nodes.
+#         leaf_pairs_with_paths : dict
+#             A dictionary with all the leaf node pairs and the respective mother nodes.
             
-        Returns
-        -------
-        consistent_quartets : array_like
-            A list with all consistent quartets.
-    """
+#         Returns
+#         -------
+#         consistent_quartets : array_like
+#             A list with all consistent quartets.
+#     """
      
-    consistent_quartets = []
-    for quartet in all_quartets:
+#     consistent_quartets = []
+#     for quartet in all_quartets:
 
-        # Define quartets
-        pair_zero = tuple(quartet[0])
-        pair_one = tuple(quartet[1])
+#         # Define quartets
+#         pair_zero = tuple(quartet[0])
+#         pair_one = tuple(quartet[1])
 
-        # Check if paths do not intercept
-        if len(np.intersect1d(leaf_pairs_with_paths[pair_zero], leaf_pairs_with_paths[pair_one])) == 0:
-            consistent_quartets.append(quartet)
+#         # Check if paths do not intercept
+#         if len(np.intersect1d(leaf_pairs_with_paths[pair_zero], leaf_pairs_with_paths[pair_one])) == 0:
+#             consistent_quartets.append(quartet)
             
-    return consistent_quartets
+#     return consistent_quartets
 
 def compute_quartet_cost(dm, labels, quartet):
     
@@ -679,7 +679,79 @@ def compute_quartet_cost(dm, labels, quartet):
     
     return cost_one + cost_two
 
-def compute_min_max_tree_costs(all_quartets,dm,labels):
+# def compute_min_max_tree_costs(all_quartets,dm,labels):
+    
+#     """
+#         Compute the minimum and maximum cost a tree can have for a given distance matrix.
+
+#         Parameters
+#         ----------
+#         all_quartets: array_like
+#             A list with all quartets of the given distance matrix.
+            
+#         dm: array_like
+#             Distance matrix saved in an numpy array.
+        
+#         labels: array_like
+#             An array with all leaf labels.
+
+#         Returns
+#         -------
+#         min_tree_cost: int
+#             Minimum possible tree cost for given distance matrix.
+            
+#         max_tree_cost: int
+#             Maximum possible tree cost for given distance matrix.
+#     """
+    
+#     min_tree_cost = 0
+#     max_tree_cost = 0 
+
+#     for three_quartets in np.array(all_quartets).reshape(int(len(all_quartets)/3),3,2,2):
+#         costs = []
+#         for quartet in three_quartets:
+#             costs.append(compute_quartet_cost(dm,labels,quartet))
+#         min_tree_cost += min(costs)
+#         max_tree_cost += max(costs)
+        
+#     return min_tree_cost, max_tree_cost
+
+# def compute_tree_score(consistent_quartets, dm, labels, min_tree_cost, max_tree_cost):
+    
+#     """
+#         Compute tree cost given a list of consistent quartets.
+
+#         Parameters
+#         ----------
+#         consistent_quartets: array_like
+#             A list with all consistent quartets.
+            
+#         dm: array_like
+#             Distance matrix saved in an numpy array.
+        
+#         labels: array_like
+#             An array with all leaf labels.
+            
+#         min_tree_cost: int
+#             Minimum possible tree cost for given distance matrix.
+            
+#         max_tree_cost: int
+#             Maximum possible tree cost for given distance matrix.
+
+#         Returns
+#         -------
+#         tree_cost: int
+#             Tree cost of given consistent quartets.
+#     """
+    
+#     cost = 0
+#     for quartet in consistent_quartets:
+#         cost += compute_quartet_cost(dm, labels,quartet)
+
+#     # return cost
+#     return (max_tree_cost - cost) / (max_tree_cost - min_tree_cost)
+
+def compute_min_max_tree_costs(leaf_labels,dm):
     
     """
         Compute the minimum and maximum cost a tree can have for a given distance matrix.
@@ -706,48 +778,55 @@ def compute_min_max_tree_costs(all_quartets,dm,labels):
     
     min_tree_cost = 0
     max_tree_cost = 0 
-
-    for three_quartets in np.array(all_quartets).reshape(int(len(all_quartets)/3),3,2,2):
+        
+    # Iterate over combinations of leaf labels i.e quartets
+    for quartet in combinations(leaf_labels, 4):
+        c = tuple(combinations(quartet, 2))
+        three_possible_quartets = [(c[0],c[5]), (c[1],c[4]), (c[2],c[3])]
         costs = []
-        for quartet in three_quartets:
-            costs.append(compute_quartet_cost(dm,labels,quartet))
+        for possible_quartet in three_possible_quartets:
+            costs.append(compute_quartet_cost(dm,leaf_labels,possible_quartet))
         min_tree_cost += min(costs)
         max_tree_cost += max(costs)
         
     return min_tree_cost, max_tree_cost
 
-def compute_tree_score(consistent_quartets, dm, labels, min_tree_cost, max_tree_cost):
+def compute_tree_score(leaf_labels, leaf_pairs_with_paths, min_tree_cost, max_tree_cost, dm):
     
     """
-        Compute tree cost given a list of consistent quartets.
+        Get paths between pairs of nodes.
 
         Parameters
         ----------
-        consistent_quartets: array_like
-            A list with all consistent quartets.
+        all_quartets: array_like
+            An array with all tree quartets.
             
-        dm: array_like
-            Distance matrix saved in an numpy array.
-        
-        labels: array_like
-            An array with all leaf labels.
+        leaf_pairs_with_paths : dict
+            A dictionary with all the leaf node pairs and the respective mother nodes.
             
-        min_tree_cost: int
-            Minimum possible tree cost for given distance matrix.
-            
-        max_tree_cost: int
-            Maximum possible tree cost for given distance matrix.
-
         Returns
         -------
-        tree_cost: int
-            Tree cost of given consistent quartets.
+        consistent_quartets : array_like
+            A list with all consistent quartets.
     """
-    
+     
+    consistent_quartets = 0
     cost = 0
-    for quartet in consistent_quartets:
-        cost += compute_quartet_cost(dm, labels,quartet)
+    for quartet in combinations(leaf_labels, 4):
+        c = tuple(combinations(quartet, 2))
+        three_possible_quartets = [(c[0],c[5]), (c[1],c[4]), (c[2],c[3])]
+        
+        for possible_quartet in three_possible_quartets:
 
+            # Define quartets
+            pair_zero = tuple(possible_quartet[0])
+            pair_one = tuple(possible_quartet[1])
+
+            # Check if paths do not intercept
+            if len(np.intersect1d(leaf_pairs_with_paths[pair_zero], leaf_pairs_with_paths[pair_one])) == 0:
+                consistent_quartets += 1
+                cost += compute_quartet_cost(dm, leaf_labels,possible_quartet)
+    
     # return cost
     return (max_tree_cost - cost) / (max_tree_cost - min_tree_cost)
 
@@ -933,11 +1012,12 @@ def make_tree(dm, leaf_labels, processes, n_trees = 1000):
 
     # Compute initial cost
     leaf_pairs = generate_leaf_pairs(leaf_labels)
-    all_quartets = generate_all_quartets(leaf_labels)
+    # all_quartets = generate_all_quartets(leaf_labels)
     leaf_pairs_with_paths = get_leaf_pairs_with_paths(leaf_pairs, get_graph(inner_node_dict, leaf_dict), processes)
-    consistent_quartets = find_consistent_quartets(all_quartets, leaf_pairs_with_paths)
-    min_tree_cost, max_tree_cost = compute_min_max_tree_costs(all_quartets,dm,leaf_labels)
-    tree_score = compute_tree_score(consistent_quartets, dm, leaf_labels, min_tree_cost, max_tree_cost)
+    min_tree_cost, max_tree_cost = compute_min_max_tree_costs(leaf_labels,dm)
+    tree_score = compute_tree_score(leaf_labels, leaf_pairs_with_paths, min_tree_cost, max_tree_cost, dm)
+    
+    # tree_score = compute_tree_score(consistent_quartets, dm, leaf_labels, min_tree_cost, max_tree_cost)
 
     leaf_pairs_with_paths_tmp = None
     graph = None
@@ -983,10 +1063,11 @@ def make_tree(dm, leaf_labels, processes, n_trees = 1000):
             leaf_pairs_with_paths_tmp = get_leaf_pairs_with_paths(leaf_pairs, get_graph(inner_node_dict_tmp, leaf_dict_tmp), 10)
 
         # Find all consistent quartets
-        consistent_quartets = find_consistent_quartets(all_quartets, leaf_pairs_with_paths_tmp)
+        # consistent_quartets = find_consistent_quartets(all_quartets, leaf_pairs_with_paths_tmp)
 
         # Compute temporary tree Score
-        tree_score_tmp = compute_tree_score(consistent_quartets, dm, leaf_labels, min_tree_cost, max_tree_cost)
+        tree_score_tmp = compute_tree_score(leaf_labels, leaf_pairs_with_paths_tmp, min_tree_cost, max_tree_cost, dm)
+        # compute_tree_score(leaf_labels, leaf_pairs_with_paths, min_tree_cost, max_tree_cost, dm)
 
         # Update tree if score improves
         if tree_score_tmp > tree_score:
@@ -1015,7 +1096,10 @@ def make_tree(dm, leaf_labels, processes, n_trees = 1000):
             ax.set_xticks([])
             ax.set_yticks([])
             clear_output(wait = True)
-            display(figure)
+            display(figure)    
+            
+            # display.clear_output(wait=True)
+            # display.display(plt.gcf())
 
         tree_count = tree_count + 1
         print(f'Tree Score: {tree_score:.5f} Mutation: {mutation} Trees Generates: {tree_count} Crieterion: {criterion[-1]:.5f}', end='\r')
